@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cameradar</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Center the content horizontally */
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            /* Optional: Set a font for better aesthetics */
+        }
+        
+        h1 {
+            text-align: center;
+            /* Center the title text */
+            margin-bottom: 20px;
+            /* Space below the title */
+        }
+        
+        .camera-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            /* Three cameras per row */
+            gap: 10px;
+            /* Space between camera items */
+            width: 100%;
+            /* Full width for the container */
+            max-width: 1200px;
+            /* Optional: Max width for the container */
+        }
+        
+        .camera {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+        }
+        
+        .camera img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Ensures the image covers the div */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Painel De Câmeras</h1>
+    <div class="camera-container" id="cameras"></div>
+
+    <script>
+        function fetchCameras() {
+            fetch('/api/cameras')
+                .then(response => response.json())
+                .then(data => {
+                    const camerasDiv = document.getElementById('cameras');
+                    camerasDiv.innerHTML = ''; // Clear existing cameras
+                    data.forEach(camera => {
+                        const cameraDiv = document.createElement('div');
+                        cameraDiv.className = 'camera';
+                        cameraDiv.innerHTML = `
+                            <a href="${camera.image_url}" target="_blank" style="display: block; height: 100%; width: 100%;">
+                                <img src="${camera.image_url}" alt="Camera Image" />
+                            </a>
+                        `;
+                        camerasDiv.appendChild(cameraDiv);
+                    });
+                });
+        }
+
+        // Fetch cameras every 10 seconds
+        setInterval(fetchCameras, 1000);
+        fetchCameras(); // Initial fetch
+    </script>
+</body>
+
+</html>
